@@ -1,10 +1,14 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
+import { FontLoader } from 'three';
 
 //load the 3d asset 
-
 const loader = new GLTFLoader();
+//load font
+const loader2 = new FontLoader();
+
 //load table asset 
 loader.load( 'family-table.glb', function ( gltf ) {
 
@@ -16,14 +20,18 @@ loader.load( 'family-table.glb', function ( gltf ) {
 
 } );
 
+
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 const renderer = new THREE.WebGLRenderer();
+// Set the background color of the scene to warm white
+scene.background = new THREE.Color(0xfff5e6); // Warm white color (you can use any color code you like)
+
 
 // Lights
 const light = new THREE.AmbientLight( 0xffffff ); // soft white light
 scene.add( light );
-const directionalLight = new THREE.DirectionalLight( 0xffffff, 1 );
+const directionalLight = new THREE.DirectionalLight( 0xfff5e6, 1 );
 scene.add( directionalLight );
 
 const controls = new OrbitControls( camera, renderer.domElement );
@@ -34,12 +42,16 @@ const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
 
 camera.position.z = 5;
 
+
+animate();
+
+
 function animate() {
 	requestAnimationFrame( animate );
 	renderer.render( scene, camera );
-}
-animate();
+    window.addEventListener('dblclick', onDoubleClick, false);
 
+}
 /////MOUSE STUFF
 
 //let onMouseDownMouseX = 0;
@@ -106,6 +118,26 @@ function onWindowResize() {
     camera3D.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
     console.log('Resized');
+}
+
+function onDoubleClick(event) {
+    loader2.load('fonts/helvetiker_regular.typeface.json', function (font) {
+        textGeometry = new THREE.TextGeometry('Your Text', {
+            font: font,
+            size: 0.2,
+            height: 0.02,
+        });
+        textMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+        
+        const textMesh = new THREE.Mesh(textGeometry, textMaterial);
+        textMesh.position.set(0, 0, 0); // Set the initial position
+        
+        scene.add(textMesh);
+        textObjects.push(textMesh);
+        
+        // Update the camera to re-render the scene
+        camera.updateProjectionMatrix();
+    });
 }
 
 
