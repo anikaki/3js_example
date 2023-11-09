@@ -1,13 +1,15 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
+// import { FontLoader } from 'three';
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
 
-
 //load the 3d asset 
+const loader = new GLTFLoader();
+//load font
 const loader2 = new FontLoader();
 
-const loader = new GLTFLoader();
 //load table asset 
 loader.load( 'family-table.glb', function ( gltf ) {
 
@@ -19,13 +21,17 @@ loader.load( 'family-table.glb', function ( gltf ) {
 
 } );
 
+
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 const renderer = new THREE.WebGLRenderer();
 let camera3D;
 let texts = [];
+
 // Set the background color of the scene to warm white
-scene.background = new THREE.Color(0xfff5e6); // Warm white color
+scene.background = new THREE.Color(0xfff5e6); // Warm white color (you can use any color code you like)
+
+
 // Lights
 const light = new THREE.AmbientLight( 0xffffff ); // soft white light
 scene.add( light );
@@ -40,17 +46,24 @@ const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
 
 camera.position.z = 5;
 
+
+animate();
+
+
+// function animate() {
+// 	requestAnimationFrame( animate );
+// 	renderer.render( scene, camera );
+//     window.addEventListener('dblclick', onDoubleClick, false);
+
+// }
 function animate() {
-	requestAnimationFrame( animate );
+    requestAnimationFrame(animate);
     for (var i = 0; i < texts.length; i++) {
         texts[i].texture.needsUpdate = true;
     }
-	renderer.render( scene, camera );
+    renderer.render(scene, camera3D);
     window.addEventListener('dblclick', onDoubleClick, false);
-
 }
-animate();
-
 /////MOUSE STUFF
 
 //let onMouseDownMouseX = 0;
@@ -106,7 +119,7 @@ function computeCameraOrientation() {
     let phi = THREE.Math.degToRad(90 - lat);  //restrict movement
     let theta = THREE.Math.degToRad(lon);
     camera3D.target.x = 100 * Math.sin(phi) * Math.cos(theta);
-    camera3D.target.y = 100 * Math.cos(phi);queueMicrotask
+    camera3D.target.y = 100 * Math.cos(phi);
     camera3D.target.z = 100 * Math.sin(phi) * Math.sin(theta);
     camera3D.lookAt(camera3D.target);
 }
@@ -115,20 +128,17 @@ function computeCameraOrientation() {
 function onWindowResize() {
     camera3D.aspect = window.innerWidth / window.innerHeight;
     camera3D.updateProjectionMatrix();
-    renderer.setnSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(window.innerWidth, window.innerHeight);
     console.log('Resized');
 }
+
 function onDoubleClick(event) {
-    console.log("double clicked");
     loader2.load('fonts/helvetiker_regular.typeface.json', function (font) {
         textGeometry = new THREE.TextGeometry('Your Text', {
             font: font,
             size: 0.2,
             height: 0.02,
         });
-        
-        console.log("loaded");
-       
         textMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
         
         const textMesh = new THREE.Mesh(textGeometry, textMaterial);
