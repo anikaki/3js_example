@@ -2,16 +2,25 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
-
+import {TextGeometry} from 'three/examples/jsm/geometries/TextGeometry'
 
 //load the 3d asset 
 const loader2 = new FontLoader();
+var raycaster = new THREE.Raycaster();
 
+let textGeometry;
+let textMaterial;
+let textObjects = [];
 const loader = new GLTFLoader();
 //load table asset 
 loader.load( 'family-table.glb', function ( gltf ) {
 
 	scene.add( gltf.scene );
+
+    let object = gltf.scene.children[0];
+    let vertices = object.geometry.attributes.position.array
+    console.log(object);
+    console.log(vertices);
 
 }, undefined, function ( error ) {
 
@@ -76,13 +85,13 @@ function moveCameraWithMouse() {
 }
 
 
-function onDocumentMouseDown(event) {
-    onPointerDownPointerX = event.clientX;
-    onPointerDownPointerY = event.clientY;
-    onPointerDownLon = lon;
-    onPointerDownLat = lat;
-    isUserInteracting = true;
-}
+// function onDocumentMouseDown(event) {
+//     onPointerDownPointerX = event.clientX;
+//     onPointerDownPointerY = event.clientY;
+//     onPointerDownLon = lon;
+//     onPointerDownLat = lat;
+//     isUserInteracting = true;
+// }
 
 function onDocumentMouseMove(event) {
     if (isUserInteracting) {
@@ -118,10 +127,29 @@ function onWindowResize() {
     renderer.setnSize(window.innerWidth, window.innerHeight);
     console.log('Resized');
 }
+function onDocumentMouseDown(event) {
+    onPointerDownPointerX = event.clientX;
+    onPointerDownPointerY = event.clientY;
+    onPointerDownLon = lon;
+    onPointerDownLat = lat;
+    if (event.shiftKey == true) {
+        let vector = new THREE.Vector3();
+        vector.set(
+            (event.clientX / window.innerWidth) * 2 - 1,
+            - (event.clientY / window.innerHeight) * 2 + 1,
+            0.5
+        );
+        vector.unproject(camera3D);
+        vector.multiplyScalar(100)
+        createNewText(textInput.value, vector);
+    } else {
+        isUserInteracting = true;
+    }
+}
 function onDoubleClick(event) {
     console.log("double clicked");
     loader2.load('fonts/helvetiker_regular.typeface.json', function (font) {
-        textGeometry = new THREE.TextGeometry('Your Text', {
+        textGeometry = new TextGeometry('Your Text', {
             font: font,
             size: 0.2,
             height: 0.02,
@@ -132,7 +160,17 @@ function onDoubleClick(event) {
         textMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
         
         const textMesh = new THREE.Mesh(textGeometry, textMaterial);
-        textMesh.position.set(0, 0, 0); // Set the initial position
+
+        var intersects = raycaster.intersectObjects(scene.children);
+        console.log(scene.children);
+
+        if (intersects.length > 0) {
+            // Get the position where the user clicked
+            var position = intersects[0].point;
+            console.log("intersects",intersects);
+            // Display text at the clicked position
+            textMesh.position.copy(position);
+        }
         
         scene.add(textMesh);
         textObjects.push(textMesh);
