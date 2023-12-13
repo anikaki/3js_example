@@ -9,8 +9,9 @@ import "firebase/app";
 import "firebase/compat/database";
 
 //Main Code
-const in_front_of_you = new THREE.Object3D();
+// const in_front_of_you = new THREE.Object3D();
 const loader = new GLTFLoader();
+let in_front_of_you;
 //load table asset 
 loader.load( 'family-table.glb', function ( gltf ) {
     gltf.scene.scale.set(30, 30, 30); 
@@ -31,7 +32,12 @@ const light = new THREE.AmbientLight( 0xffffff ); // soft white light
 scene.add( light );
 const directionalLight = new THREE.DirectionalLight( 0xfff5e6, 1 );
 scene.add( directionalLight );
-
+//tiny little dot (could be invisible) for placing things in front of you
+var geometryFront = new THREE.BoxGeometry(1, 1, 1);
+var materialFront = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+in_front_of_you = new THREE.Mesh(geometryFront, materialFront);
+camera.add(in_front_of_you); // then add in front of the camera so it follow it
+in_front_of_you.position.set(0, 0, -600);
 
 const controls = new OrbitControls( camera, renderer.domElement );
 renderer.setSize( window.innerWidth, window.innerHeight );
@@ -60,6 +66,7 @@ let isUserInteracting = false;
 let zPosition = -34.00499597512203;
 
 
+
 animate();
 moveCameraWithMouse();
 initFirebase();
@@ -74,6 +81,7 @@ function animate() {
     }
     renderer.render(scene, camera);
 }
+
 
 var textInput = document.getElementById("text");  //get a hold of something in the DOM
 textInput.addEventListener("keydown", function (e) {
