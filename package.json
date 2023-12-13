@@ -12,6 +12,8 @@
     "vite": "^4.5.0"
   },
   "dependencies": {
+    "firebase": "^10.7.1",
+    "mathutils": "^0.0.1",
     "three": "^0.158.0",
     "three-bmfont-text": "^3.0.1",
     "three-orbitcontrols": "^2.110.3"

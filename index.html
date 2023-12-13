@@ -1,36 +1,39 @@
 <!doctype html>
 <html lang="en">
   
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Three Load modle example</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/main.js"></script>
-  
-  </body>
-</html>
 
-<!-- ldkf --> 
-<!-- <html>
-  <html lang="en">
-  
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/main.js"></script>
-  
-  </body>
-</html>
-
-<head>
     <title>ADD Canvas Text</title>
     <style>
+
+        #start-dialog {
+            z-index: 5;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            margin: auto;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
         #container {
             position: absolute;
             top: 0;
@@ -55,17 +58,20 @@
             transform: translate(-50%, -50%);
         }
     </style>
-</head>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/102/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
-
-<body>
+  </head>
+  <body>
+  
     <div id='container'></div>
+    <div id="start-dialog">
+      <h1>This is a celebration of life </h1>
+      <p>Welcome to the celebration of life. Are you ready to share something ?</p>
+      <button id="start-button" onclick="startGame()">Start</button>
+  </div>
     <div>
-        Text: <input type="text" value='Hi There' id="text">
+      Text: <input type="text" value='Share something here' id="text">
     </div>
-    <script src="addText.js"></script>
-
-</body>
-
-</html> -->
+    <div id="app"></div>
+    <script type="module" src="/main.js"></script>
+  </body>
+  
+</html>
